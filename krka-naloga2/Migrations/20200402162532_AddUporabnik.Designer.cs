@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using krka_naloga2.Data;
 
 namespace krka_naloga2.Migrations
 {
     [DbContext(typeof(KrkaDbContext))]
-    partial class KrkaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200402162532_AddUporabnik")]
+    partial class AddUporabnik
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -223,68 +225,6 @@ namespace krka_naloga2.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("krka_naloga2.Data.Dostava", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Sifra")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Termin")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Dostave");
-                });
-
-            modelBuilder.Entity("krka_naloga2.Data.Podjetje", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Naziv")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Sifra")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Podjetja");
-                });
-
-            modelBuilder.Entity("krka_naloga2.Data.Skladisce", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Sifra")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Skladisca");
-                });
-
-            modelBuilder.Entity("krka_naloga2.Data.TockaSkladisca", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Sifra")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TockeSkladisc");
                 });
 
             modelBuilder.Entity("krka_naloga2.Data.Uporabnik", b =>
