@@ -4,6 +4,7 @@
     {
         public int Ura { get; set; }
         public bool JeProst { get; set; }
+        public bool JeIzbran { get; set; }
     }
 
     

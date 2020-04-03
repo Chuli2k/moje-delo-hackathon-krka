@@ -64,7 +64,8 @@ namespace krka_naloga2.Controllers
                         var uraObj = new UraTerminaModel()
                         {
                             Ura = ura,
-                            JeProst = r%2 == 0
+                            JeProst = r%2 == 0,
+                            JeIzbran = false
                         };
 
                         tockaObj.SeznamUreTermina.Add(uraObj);
@@ -79,9 +80,21 @@ namespace krka_naloga2.Controllers
             var model = new IzberiterminDostaveModel()
             {
                 SifraDostave = sifraDostave,
-                SeznaTerminov = seznam
+                SeznamTerminov = seznam
             };
             return View(model);
+        }
+
+        [HttpPost("/Dostava/{sifraDostave}/IzbiraTermina")]
+        public IActionResult IzberiTerminPost(string sifraDostave, DateTime? izbranDatum, int? izbranaUra, string izbranaTockaSifra) //TODO: Poglej kak uporabit posebaj class namesto seznama parametrov.
+        {
+            return RedirectToAction("Porocilo", new { sifraDostave });
+        }
+
+        [HttpGet("/Dostava/{sifraDostave}/Porocilo")]
+        public IActionResult Porocilo(string sifraDostave)
+        {
+            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -90,4 +103,5 @@ namespace krka_naloga2.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
+
 }

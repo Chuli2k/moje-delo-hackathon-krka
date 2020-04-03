@@ -3,41 +3,70 @@
     ViewData["Title"] = "IzberiTermin";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@section Scripts{
+    <script type="text/javascript">
+        //Nastavljanje polj pri izbiri termina
+        $(document).ready(function () {
+            $('input[name$="Izbira"]').on('change', function () {
+                console.log($(this).attr('data-tocka'));
+                $('#izbranDatum').attr('value', $(this).attr('data-datum'));
+                $('#izbranaUra').attr('value', $(this).attr('data-ura'));
+                $('#izbranaTockaSifra').attr('value', $(this).attr('data-tocka'));
+            });
+        });
+    </script>
+}
 
 <h1>IzberiTermin</h1>
 <p>@Model.SifraDostave</p>
-
-@{ 
-    foreach (var datum in Model.SeznaTerminov)
-    {
-        <div>
-            <h4>@datum.Datum.ToShortDateString()</h4>
-            <table>
-                @{
-                    <tr>
-                        @for (int i = -1; i < 24; i++)
-                        {
-                            var uraText = i < 0 ? "" : i.ToString();
-                            <td>@uraText</td>
-                        }
-                    </tr>
-
-                    foreach (var tocka in datum.SeznamTockSkladisca)
-                    {
+<form action="/Dostava/@Model.SifraDostave/IzbiraTermina" method="post">
+    <input type="submit" value="Izberi" class="btn btn-primary" />
+    @*<input type="hidden" id="izbranDatum" asp-for="IzbranTermin.IzbranDatum" />
+        <input type="hidden" id="izbranaUra" asp-for="IzbranTermin.IzbranaUra" />
+        <input type="hidden" id="izbranaTockaSifra" asp-for="IzbranTermin.IzbranaTockaSifra" />*@
+    <input type="hidden" id="izbranDatum" asp-for="IzbranDatum" />
+    <input type="hidden" id="izbranaUra" asp-for="IzbranaUra" />
+    <input type="hidden" id="izbranaTockaSifra" asp-for="IzbranaTockaSifra" />
+    @{
+        foreach (var datum in Model.SeznamTerminov)
+        {
+            <div>
+                <h4>@datum.Datum.ToShortDateString()</h4>
+                <table>
+                    @{
                         <tr>
-                            <td>@tocka.SifraTockeSkladisca</td>
-                            @{
-                                foreach (var ura in tocka.SeznamUreTermina)
-                                {
-                                    var boxText = ura.JeProst ? "_" : "X";
-                                    var boxColor = ura.JeProst ? "green" : "red";
-                                    <td style="background-color: @boxColor">@boxText</td>
-                                }
+                            @for (int i = -1; i < 24; i++)
+                            {
+                                var uraText = i < 0 ? "" : i.ToString();
+                                <td>@uraText</td>
                             }
                         </tr>
+
+                        foreach (var tocka in datum.SeznamTockSkladisca)
+                        {
+                            <tr>
+                                <td>@tocka.SifraTockeSkladisca</td>
+                                @{
+                                    foreach (var ura in tocka.SeznamUreTermina)
+                                    {
+                                        var boxColor = ura.JeProst ? "green" : "red";
+                                        var radioValue = datum.Datum.ToShortDateString() + "-" + tocka.SifraTockeSkladisca + "-" + ura.Ura;
+                                        <td style="background-color: @boxColor">
+                                            <input name="Izbira"
+                                                   id="Izbira-@radioValue"
+                                                   type="radio"
+                                                   value=""
+                                                   data-datum="@datum.Datum"
+                                                   data-ura="@ura.Ura"
+                                                   data-tocka="@tocka.SifraTockeSkladisca" />
+                                        </td>
+                                    }
+                                }
+                            </tr>
+                        }
                     }
-                }
-            </table>
-        </div>
+                </table>
+            </div>
+        }
     }
-}
+</form>
