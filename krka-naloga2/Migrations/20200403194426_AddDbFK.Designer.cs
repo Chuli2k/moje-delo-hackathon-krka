@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using krka_naloga2.Data;
 
 namespace krka_naloga2.Migrations
 {
     [DbContext(typeof(KrkaDbContext))]
-    partial class KrkaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200403194426_AddDbFK")]
+    partial class AddDbFK
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -259,13 +261,9 @@ namespace krka_naloga2.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Sifra")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Sifra")
-                        .IsUnique()
-                        .HasFilter("[Sifra] IS NOT NULL");
 
                     b.ToTable("Podjetja");
                 });
@@ -278,13 +276,9 @@ namespace krka_naloga2.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Sifra")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Sifra")
-                        .IsUnique()
-                        .HasFilter("[Sifra] IS NOT NULL");
 
                     b.ToTable("Skladisca");
                 });
@@ -297,16 +291,14 @@ namespace krka_naloga2.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Sifra")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SkladisceId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SkladisceId", "Sifra")
-                        .IsUnique()
-                        .HasFilter("[Sifra] IS NOT NULL");
+                    b.HasIndex("SkladisceId");
 
                     b.ToTable("TockeSkladisc");
                 });

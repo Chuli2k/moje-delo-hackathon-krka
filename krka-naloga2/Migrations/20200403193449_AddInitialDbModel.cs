@@ -11,7 +11,8 @@ namespace krka_naloga2.Migrations
                 name: "Dostave",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Sifra = table.Column<string>(nullable: true),
                     Termin = table.Column<DateTime>(nullable: false)
                 },
@@ -24,7 +25,8 @@ namespace krka_naloga2.Migrations
                 name: "Podjetja",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Naziv = table.Column<string>(nullable: true),
                     Sifra = table.Column<string>(nullable: true)
                 },
@@ -37,7 +39,8 @@ namespace krka_naloga2.Migrations
                 name: "Skladisca",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Sifra = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -49,7 +52,8 @@ namespace krka_naloga2.Migrations
                 name: "TockeSkladisc",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Sifra = table.Column<string>(nullable: true)
                 },
                 constraints: table =>

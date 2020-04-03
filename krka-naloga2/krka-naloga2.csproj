@@ -6,16 +6,35 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200402174141_AddInitialDbModel.cs" />
+    <Compile Remove="Migrations\20200402174141_AddInitialDbModel.Designer.cs" />
+    <Compile Remove="Migrations\20200403192128_AddPodjetjeAutoGen.cs" />
+    <Compile Remove="Migrations\20200403192128_AddPodjetjeAutoGen.Designer.cs" />
+    <Compile Remove="Migrations\20200403192319_AddPodjetjeAutoGen.cs" />
+    <Compile Remove="Migrations\20200403192319_AddPodjetjeAutoGen.Designer.cs" />
+    <Compile Remove="Migrations\20200403192555_AddPodjetjeAutoGen.cs" />
+    <Compile Remove="Migrations\20200403192555_AddPodjetjeAutoGen.Designer.cs" />
+    <Compile Remove="Migrations\20200403193253_test.cs" />
+    <Compile Remove="Migrations\20200403193253_test.Designer.cs" />
+    <Compile Remove="Migrations\20200403193727_test.cs" />
+    <Compile Remove="Migrations\20200403193727_test.Designer.cs" />
+    <Compile Remove="Migrations\20200403194105_test.cs" />
+    <Compile Remove="Migrations\20200403194105_test.Designer.cs" />
+    <Compile Remove="Migrations\20200403194343_test.cs" />
+    <Compile Remove="Migrations\20200403194343_test.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.2" />
   </ItemGroup>
 
 

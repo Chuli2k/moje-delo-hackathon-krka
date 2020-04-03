@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using krka_naloga2.Data;
 
 namespace krka_naloga2.Migrations
 {
     [DbContext(typeof(KrkaDbContext))]
-    partial class KrkaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200403193449_AddInitialDbModel")]
+    partial class AddInitialDbModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -238,12 +240,7 @@ namespace krka_naloga2.Migrations
                     b.Property<DateTime>("Termin")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("TockaSkladiscaId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("TockaSkladiscaId");
 
                     b.ToTable("Dostave");
                 });
@@ -259,13 +256,9 @@ namespace krka_naloga2.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Sifra")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Sifra")
-                        .IsUnique()
-                        .HasFilter("[Sifra] IS NOT NULL");
 
                     b.ToTable("Podjetja");
                 });
@@ -278,13 +271,9 @@ namespace krka_naloga2.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Sifra")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Sifra")
-                        .IsUnique()
-                        .HasFilter("[Sifra] IS NOT NULL");
 
                     b.ToTable("Skladisca");
                 });
@@ -297,16 +286,9 @@ namespace krka_naloga2.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Sifra")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("SkladisceId")
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SkladisceId", "Sifra")
-                        .IsUnique()
-                        .HasFilter("[Sifra] IS NOT NULL");
 
                     b.ToTable("TockeSkladisc");
                 });
@@ -368,24 +350,6 @@ namespace krka_naloga2.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("krka_naloga2.Data.Dostava", b =>
-                {
-                    b.HasOne("krka_naloga2.Data.TockaSkladisca", "TockaSkladisca")
-                        .WithMany("Dostave")
-                        .HasForeignKey("TockaSkladiscaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("krka_naloga2.Data.TockaSkladisca", b =>
-                {
-                    b.HasOne("krka_naloga2.Data.Skladisce", "Skladisce")
-                        .WithMany("TockeSkladisca")
-                        .HasForeignKey("SkladisceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

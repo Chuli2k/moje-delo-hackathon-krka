@@ -10,8 +10,8 @@ using krka_naloga2.Data;
 namespace krka_naloga2.Migrations
 {
     [DbContext(typeof(KrkaDbContext))]
-    [Migration("20200402174141_AddInitialDbModel")]
-    partial class AddInitialDbModel
+    [Migration("20200403194810_AddUnique")]
+    partial class AddUnique
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -229,9 +229,10 @@ namespace krka_naloga2.Migrations
 
             modelBuilder.Entity("krka_naloga2.Data.Dostava", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Sifra")
                         .HasColumnType("nvarchar(max)");
@@ -239,52 +240,75 @@ namespace krka_naloga2.Migrations
                     b.Property<DateTime>("Termin")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("TockaSkladiscaId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("TockaSkladiscaId");
 
                     b.ToTable("Dostave");
                 });
 
             modelBuilder.Entity("krka_naloga2.Data.Podjetje", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Naziv")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Sifra")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Sifra")
+                        .IsUnique()
+                        .HasFilter("[Sifra] IS NOT NULL");
 
                     b.ToTable("Podjetja");
                 });
 
             modelBuilder.Entity("krka_naloga2.Data.Skladisce", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Sifra")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Sifra")
+                        .IsUnique()
+                        .HasFilter("[Sifra] IS NOT NULL");
 
                     b.ToTable("Skladisca");
                 });
 
             modelBuilder.Entity("krka_naloga2.Data.TockaSkladisca", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Sifra")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("SkladisceId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SkladisceId", "Sifra")
+                        .IsUnique()
+                        .HasFilter("[Sifra] IS NOT NULL");
 
                     b.ToTable("TockeSkladisc");
                 });
@@ -346,6 +370,24 @@ namespace krka_naloga2.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("krka_naloga2.Data.Dostava", b =>
+                {
+                    b.HasOne("krka_naloga2.Data.TockaSkladisca", "TockaSkladisca")
+                        .WithMany("Dostave")
+                        .HasForeignKey("TockaSkladiscaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("krka_naloga2.Data.TockaSkladisca", b =>
+                {
+                    b.HasOne("krka_naloga2.Data.Skladisce", "Skladisce")
+                        .WithMany("TockeSkladisca")
+                        .HasForeignKey("SkladisceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

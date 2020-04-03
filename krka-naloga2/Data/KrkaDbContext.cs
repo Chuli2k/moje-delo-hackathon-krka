@@ -24,6 +24,18 @@ namespace krka_naloga2.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<Skladisce>()
+                .HasIndex(t => t.Sifra)
+                .IsUnique();
+
+            builder.Entity<TockaSkladisca>()
+                .HasIndex(t => new { t.SkladisceId, t.Sifra })
+                .IsUnique();
+
+            builder.Entity<Podjetje>()
+                .HasIndex(t => t.Sifra)
+                .IsUnique();
         }
     }
 }
