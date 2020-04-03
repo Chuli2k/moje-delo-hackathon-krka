@@ -1,0 +1,43 @@
+﻿@model krka_naloga2.Models.IzberiterminDostaveModel
+@{
+    ViewData["Title"] = "IzberiTermin";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>IzberiTermin</h1>
+<p>@Model.SifraDostave</p>
+
+@{ 
+    foreach (var datum in Model.SeznaTerminov)
+    {
+        <div>
+            <h4>@datum.Datum.ToShortDateString()</h4>
+            <table>
+                @{
+                    <tr>
+                        @for (int i = -1; i < 24; i++)
+                        {
+                            var uraText = i < 0 ? "" : i.ToString();
+                            <td>@uraText</td>
+                        }
+                    </tr>
+
+                    foreach (var tocka in datum.SeznamTockSkladisca)
+                    {
+                        <tr>
+                            <td>@tocka.SifraTockeSkladisca</td>
+                            @{
+                                foreach (var ura in tocka.SeznamUreTermina)
+                                {
+                                    var boxText = ura.JeProst ? "_" : "X";
+                                    var boxColor = ura.JeProst ? "green" : "red";
+                                    <td style="background-color: @boxColor">@boxText</td>
+                                }
+                            }
+                        </tr>
+                    }
+                }
+            </table>
+        </div>
+    }
+}
