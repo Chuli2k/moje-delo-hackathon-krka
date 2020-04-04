@@ -182,6 +182,24 @@ namespace krka_naloga2.Controllers
             return View(model);
         }
 
+        [HttpGet("/Dostava")]
+        public IActionResult SeznamDostav()
+        {
+            var model = _krkaRepo.GetAllDostave(new DateTime(2020, 1, 1), new DateTime(2021, 1, 1));
+
+            return View(model);
+        }
+
+        [HttpGet("/Dostava/{sifraDostave}/Delete")]
+        public IActionResult DeleteDostava(string sifraDostave)
+        {
+            var d = _krkaRepo.GetDostava(sifraDostave);
+            _krkaRepo.DeleteDostava(d.Id);
+            _krkaRepo.SaveChanges();
+
+            return RedirectToAction("SeznamDostav");
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

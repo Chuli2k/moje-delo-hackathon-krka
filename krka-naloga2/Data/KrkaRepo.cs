@@ -12,9 +12,10 @@ namespace krka_naloga2.Data
         IEnumerable<Skladisce> GetAllSkladisca();
         Skladisce GetSkladisceByPrefix(string prefix);
         IEnumerable<TockaSkladisca> GetAllTockeSkladisca(int skladisceId);
-        IEnumerable<Dostava> GetAllDostave(DateTime start, DateTime end, int skladisceId);
+        IEnumerable<Dostava> GetAllDostave(DateTime start, DateTime end, int? skladisceId = null);
         void AddDostava(Dostava dostava);
         Dostava GetDostava(string sifraDostave);
+        void DeleteDostava(int id);
     }
 
     public class KrkaRepo : IKrkaRepo
@@ -24,6 +25,15 @@ namespace krka_naloga2.Data
         public KrkaRepo(KrkaDbContext context)
         {
             _context = context;
+        }
+
+        private IQueryable<Dostava> GetDostaveAllIncluding()
+        {
+            return _context.Dostave
+               .Include(t => t.Uporabnik)
+               .Include(t => t.Podjetje)
+               .Include(t => t.TockaSkladisca)
+               .Include(t => t.TockaSkladisca.Skladisce);
         }
 
         public bool SaveChanges()
@@ -46,9 +56,14 @@ namespace krka_naloga2.Data
             return _context.TockeSkladisc.AsNoTracking().Where(t => t.SkladisceId == skladisceId).ToList();
         }
 
-        public IEnumerable<Dostava> GetAllDostave(DateTime start, DateTime end, int skladisceId)
+        public IEnumerable<Dostava> GetAllDostave(DateTime start, DateTime end, int? skladisceId = null)
         {
-            return _context.Dostave.AsNoTracking().Where(t => t.Termin >= start && t.Termin <= end && t.TockaSkladisca.SkladisceId == skladisceId).ToList();
+            var q = GetDostaveAllIncluding().AsNoTracking();
+            
+            if (skladisceId.HasValue)
+                q = q.Where(t => t.TockaSkladisca.SkladisceId == skladisceId);
+
+            return q.Where(t => t.Termin >= start && t.Termin <= end).ToList();
         }
 
         public void AddDostava(Dostava dostava)
@@ -58,12 +73,17 @@ namespace krka_naloga2.Data
 
         public Dostava GetDostava(string sifraDostave)
         {
-            return _context.Dostave
+            return GetDostaveAllIncluding()
                 .AsNoTracking()
-                .Include(t => t.Podjetje)
-                .Include(t => t.TockaSkladisca)
-                .Include(t => t.TockaSkladisca.Skladisce)
                 .SingleOrDefault(t => t.Sifra == sifraDostave);
+        }
+
+        public void DeleteDostava(int id)
+        {
+            var d = _context.Dostave.SingleOrDefault(t => t.Id == id);
+            if (d == null) return;
+
+            _context.Dostave.Remove(d);
         }
     }
 }

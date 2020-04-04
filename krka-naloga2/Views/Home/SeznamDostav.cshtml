@@ -1,0 +1,63 @@
+﻿@model IEnumerable<krka_naloga2.Data.Dostava>
+
+@{
+    ViewData["Title"] = "SeznamDostav";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>SeznamDostav</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Sifra)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Termin)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TockaSkladisca.Skladisce)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TockaSkladisca)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Podjetje)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Uporabnik)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sifra)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Termin)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TockaSkladisca.Skladisce.Sifra)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TockaSkladisca.Sifra)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Podjetje.Naziv)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Uporabnik.UserName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Porocilo" asp-route-sifraDostave="@item.Sifra">Poročilo</a> |
+                <a asp-action="DeleteDostava" asp-route-sifraDostave="@item.Sifra">Izbriši</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
