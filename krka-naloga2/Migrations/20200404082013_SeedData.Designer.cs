@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using krka_naloga2.Data;
 
 namespace krka_naloga2.Migrations
 {
     [DbContext(typeof(KrkaDbContext))]
-    partial class KrkaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200404082013_SeedData")]
+    partial class SeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -232,9 +234,6 @@ namespace krka_naloga2.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("PodjetjeId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Sifra")
                         .HasColumnType("nvarchar(max)");
 
@@ -245,8 +244,6 @@ namespace krka_naloga2.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PodjetjeId");
 
                     b.HasIndex("TockaSkladiscaId");
 
@@ -502,12 +499,6 @@ namespace krka_naloga2.Migrations
 
             modelBuilder.Entity("krka_naloga2.Data.Dostava", b =>
                 {
-                    b.HasOne("krka_naloga2.Data.Podjetje", "Podjetje")
-                        .WithMany("Dostave")
-                        .HasForeignKey("PodjetjeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("krka_naloga2.Data.TockaSkladisca", "TockaSkladisca")
                         .WithMany("Dostave")
                         .HasForeignKey("TockaSkladiscaId")

@@ -9,6 +9,6 @@ namespace krka_naloga2.Data
         public string Sifra { get; set; }
         public int SkladisceId { get; set; }
         public Skladisce Skladisce { get; set; }
-        public HashSet<Dostava> Dostave { get; set; }
+        public HashSet<Dostava> Dostave { get; set; } = new HashSet<Dostava>();
     }
 }

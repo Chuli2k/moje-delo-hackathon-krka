@@ -36,6 +36,39 @@ namespace krka_naloga2.Data
             builder.Entity<Podjetje>()
                 .HasIndex(t => t.Sifra)
                 .IsUnique();
+
+            SeedData(builder);
+        }
+
+        private void SeedData(ModelBuilder builder)
+        {
+            builder.Entity<Podjetje>()
+                .HasData(
+                    new Podjetje() { Id = 1, Naziv = "Krka", Sifra = "10001" },
+                    new Podjetje() { Id = 2, Naziv = "Bayer", Sifra = "10002" }
+                );
+
+            var skl = new[]
+            {
+                new Skladisce() { Id = 1, Sifra = "1" },
+                new Skladisce() { Id = 2, Sifra = "2" },
+                new Skladisce() { Id = 3, Sifra = "3" },
+            };
+            var tck = new List<TockaSkladisca>();
+            int i = 1;
+            foreach (var s in skl)
+            {
+                tck.AddRange(new[] {
+                    new TockaSkladisca(){ Id = i, Sifra = "1", SkladisceId = s.Id },
+                    new TockaSkladisca(){ Id = i + 1, Sifra = "2", SkladisceId = s.Id },
+                    new TockaSkladisca(){ Id = i + 2, Sifra = "3", SkladisceId = s.Id },
+                    new TockaSkladisca(){ Id = i + 3, Sifra = "4", SkladisceId = s.Id },
+                    new TockaSkladisca(){ Id = i + 4, Sifra = "5", SkladisceId = s.Id },
+                });
+                i += 5;
+            }
+            builder.Entity<Skladisce>().HasData(skl);
+            builder.Entity<TockaSkladisca>().HasData(tck);
         }
     }
 }

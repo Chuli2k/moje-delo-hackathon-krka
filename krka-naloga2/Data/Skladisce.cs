@@ -8,6 +8,6 @@ namespace krka_naloga2.Data
         public int Id { get; set; }
         public string Sifra { get; set; }
 
-        public HashSet<TockaSkladisca> TockeSkladisca { get; set; }
+        public HashSet<TockaSkladisca> TockeSkladisca { get; set; } = new HashSet<TockaSkladisca>();
     }
 }
