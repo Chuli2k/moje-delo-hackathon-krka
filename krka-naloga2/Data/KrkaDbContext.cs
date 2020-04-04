@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace krka_naloga2.Data
 {
-    public class KrkaDbContext : IdentityDbContext<IdentityUser>
+    public class KrkaDbContext : IdentityDbContext<Uporabnik>
     {
         public KrkaDbContext(DbContextOptions<KrkaDbContext> options)
             : base(options)

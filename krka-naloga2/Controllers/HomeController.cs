@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using krka_naloga2.Models;
 using Microsoft.AspNetCore.Authorization;
 using krka_naloga2.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace krka_naloga2.Controllers
 {
@@ -16,13 +17,16 @@ namespace krka_naloga2.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IKrkaRepo _krkaRepo;
+        private readonly UserManager<Uporabnik> _userManager;
 
         public HomeController(
             ILogger<HomeController> logger,
-            IKrkaRepo krkaRepo)
+            IKrkaRepo krkaRepo,
+            UserManager<Uporabnik> userManager)
         {
             _logger = logger;
             _krkaRepo = krkaRepo;
+            _userManager = userManager;
         }
 
         [AllowAnonymous]
@@ -123,11 +127,14 @@ namespace krka_naloga2.Controllers
         }
 
         [HttpPost("/Dostava/{sifraDostave}/IzbiraTermina")]
-        public IActionResult IzberiTerminPost(string sifraDostave, DateTime? izbranDatum, int? izbranaUra, int? izbranaTockaSifra) //TODO: Poglej kak uporabit posebaj class namesto seznama parametrov.
+        public async Task<IActionResult> IzberiTerminPost(string sifraDostave, DateTime? izbranDatum, int? izbranaUra, int? izbranaTockaSifra) //TODO: Poglej kak uporabit posebaj class namesto seznama parametrov.
         {
+            var uporabnik = await _userManager.GetUserAsync(User);
+
             var dostava = new Dostava()
             {
-                PodjetjeId = 2,
+                PodjetjeId = uporabnik.PodjetjeId,
+                UporabnikId = uporabnik.Id,
                 Sifra = sifraDostave,
                 TockaSkladiscaId = izbranaTockaSifra.Value,
                 Termin = izbranDatum.Value.AddHours(izbranaUra.Value)
@@ -138,13 +145,13 @@ namespace krka_naloga2.Controllers
         }
 
         [HttpGet("/Dostava/{sifraDostave}/Porocilo")]
-        public IActionResult Porocilo(string sifraDostave)
+        public async Task<IActionResult> PorociloAsync(string sifraDostave)
         {
             //TODO: preveri, da šifra dostave obstaja
 
             var dostavaDb = _krkaRepo.GetDostava(sifraDostave);
-
-            var mailMsg = $"Uporabnik: {User.Identity.Name}" + Environment.NewLine +
+            var uporabnik = await _userManager.GetUserAsync(User);
+            var mailMsg = $"Uporabnik: {uporabnik.UserName}" + Environment.NewLine +
                         $"Podjetje: {dostavaDb.Podjetje.Naziv}" + Environment.NewLine +
                         $"Skladišče: {dostavaDb.TockaSkladisca.Skladisce.Sifra}" + Environment.NewLine +
                         $"Točka skladišča: {dostavaDb.TockaSkladisca.Sifra}" + Environment.NewLine +
@@ -163,13 +170,13 @@ namespace krka_naloga2.Controllers
         }
 
         [HttpGet("/Dostava/{sifraDostave}/Tiskaj")]
-        public IActionResult Tiskaj(string sifraDostave)
+        public async Task<IActionResult> TiskajAsync(string sifraDostave)
         {
             //TODO: preveri, da šifra dostave obstaja
-
+            var uporabnik = await _userManager.GetUserAsync(User);
             var model = new PorociloModel()
             {
-                UporabnikIme = User.Identity.Name,
+                UporabnikIme = uporabnik.UserName,
                 Dostava = _krkaRepo.GetDostava(sifraDostave)
             };
             return View(model);

@@ -22,6 +22,8 @@
     <Compile Remove="Migrations\20200403194105_test.Designer.cs" />
     <Compile Remove="Migrations\20200403194343_test.cs" />
     <Compile Remove="Migrations\20200403194343_test.Designer.cs" />
+    <Compile Remove="Migrations\20200404135508_DostavaFkUporabnik.cs" />
+    <Compile Remove="Migrations\20200404135508_DostavaFkUporabnik.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

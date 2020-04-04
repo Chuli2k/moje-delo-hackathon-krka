@@ -30,7 +30,7 @@ namespace krka_naloga2
 
             services.AddTransient<IKrkaRepo, KrkaRepo>();
 
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<Uporabnik>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<KrkaDbContext>();
 
             services.AddControllersWithViews();

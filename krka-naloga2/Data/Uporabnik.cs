@@ -7,6 +7,7 @@ namespace krka_naloga2.Data
 {
     public class Uporabnik :  IdentityUser
     {
-        public string Podjetje { get; set; }
+        public int PodjetjeId { get; set; }
+        public HashSet<Dostava> Dostave { get; set; } = new HashSet<Dostava>();
     }
 }
