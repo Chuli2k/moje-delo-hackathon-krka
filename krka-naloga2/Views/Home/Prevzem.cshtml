@@ -1,0 +1,15 @@
+﻿@model krka_naloga2.Data.Dostava
+@{
+    ViewData["Title"] = "Prevzem";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Prevzem</h1>
+@if (Model != null)
+{
+    <partial name="PorociloPodatki" model="Model" />
+    <button>Potrdi</button>
+} else
+{
+    <p>Podana dostava ne obstaja.</p>
+}

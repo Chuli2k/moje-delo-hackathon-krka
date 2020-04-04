@@ -12,13 +12,5 @@
 }
 else
 {
-    <div id="tiskaj">
-        <p>
-            Uporabnik:@Model.UporabnikIme<br />
-            Podjetje:@Model.Dostava.Podjetje.Naziv<br />
-            Skladišče:@Model.Dostava.TockaSkladisca.Skladisce.Sifra<br />
-            Točka skladišča:@Model.Dostava.TockaSkladisca.Sifra<br />
-            Termin:@Model.Dostava.Termin<br />
-        </p>
-    </div>
+    <partial name="PorociloPodatki" model="Model.Dostava" />
 }
