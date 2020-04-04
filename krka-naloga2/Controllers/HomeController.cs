@@ -64,6 +64,13 @@ namespace krka_naloga2.Controllers
                 return View("VnesiStDostave");
             }
 
+            var dostavaDb = _krkaRepo.GetDostava(dostava.Sifra);
+            if(dostavaDb != null)
+            {
+                ModelState.AddModelError("Sifra", $"Šifra dostave že obstaja!");
+                return View("VnesiStDostave");
+            }
+
             return RedirectToAction("IzberiTermin", new { sifraDostave = dostava.Sifra });
         }
 
