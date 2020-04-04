@@ -14,6 +14,7 @@ namespace krka_naloga2.Data
         IEnumerable<TockaSkladisca> GetAllTockeSkladisca(int skladisceId);
         IEnumerable<Dostava> GetAllDostave(DateTime start, DateTime end, int skladisceId);
         void AddDostava(Dostava dostava);
+        Dostava GetDostava(string sifraDostave);
     }
 
     public class KrkaRepo : IKrkaRepo
@@ -53,6 +54,16 @@ namespace krka_naloga2.Data
         public void AddDostava(Dostava dostava)
         {
             _context.Dostave.Add(dostava);
+        }
+
+        public Dostava GetDostava(string sifraDostave)
+        {
+            return _context.Dostave
+                .AsNoTracking()
+                .Include(t => t.Podjetje)
+                .Include(t => t.TockaSkladisca)
+                .Include(t => t.TockaSkladisca.Skladisce)
+                .SingleOrDefault(t => t.Sifra == sifraDostave);
         }
     }
 }

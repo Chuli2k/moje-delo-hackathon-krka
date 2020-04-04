@@ -100,7 +100,6 @@ namespace krka_naloga2.Controllers
                         var uraObj = new UraTerminaModel()
                         {
                             Ura = ura,
-                            //JeProst = r%2 == 0,
                             JeProst = !dostave.Any(t => t.Termin.Date == danObj.Datum && t.Termin.Hour == ura && t.TockaSkladiscaId == tocka.Id),
                             JeIzbran = false
                         };
@@ -141,7 +140,39 @@ namespace krka_naloga2.Controllers
         [HttpGet("/Dostava/{sifraDostave}/Porocilo")]
         public IActionResult Porocilo(string sifraDostave)
         {
-            return View();
+            //TODO: preveri, da šifra dostave obstaja
+
+            var dostavaDb = _krkaRepo.GetDostava(sifraDostave);
+
+            var mailMsg = $"Uporabnik: {User.Identity.Name}" + Environment.NewLine +
+                        $"Podjetje: {dostavaDb.Podjetje.Naziv}" + Environment.NewLine +
+                        $"Skladišče: {dostavaDb.TockaSkladisca.Skladisce.Sifra}" + Environment.NewLine +
+                        $"Točka skladišča: {dostavaDb.TockaSkladisca.Sifra}" + Environment.NewLine +
+                        $"Termin: {dostavaDb.Termin}" + Environment.NewLine;
+
+            mailMsg = mailMsg.Replace(Environment.NewLine, "%0D%0A");
+            mailMsg = mailMsg.Replace(" ", "%20");
+
+            var model = new PorociloModel()
+            {
+                UporabnikIme = User.Identity.Name,
+                MailMessage = mailMsg,
+                Dostava = dostavaDb
+            };
+            return View(model);
+        }
+
+        [HttpGet("/Dostava/{sifraDostave}/Tiskaj")]
+        public IActionResult Tiskaj(string sifraDostave)
+        {
+            //TODO: preveri, da šifra dostave obstaja
+
+            var model = new PorociloModel()
+            {
+                UporabnikIme = User.Identity.Name,
+                Dostava = _krkaRepo.GetDostava(sifraDostave)
+            };
+            return View(model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

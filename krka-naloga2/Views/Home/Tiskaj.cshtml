@@ -1,0 +1,24 @@
+﻿@model krka_naloga2.Models.PorociloModel
+@{
+    ViewData["Title"] = "Tiskaj";
+    Layout = "~/Views/Shared/_LayoutTiskaj.cshtml";
+}
+
+@if (Model == null || Model.Dostava == null)
+{
+    <div>
+        <p>Dostava ne obstaja!</p>
+    </div>
+}
+else
+{
+    <div id="tiskaj">
+        <p>
+            Uporabnik:@Model.UporabnikIme<br />
+            Podjetje:@Model.Dostava.Podjetje.Naziv<br />
+            Skladišče:@Model.Dostava.TockaSkladisca.Skladisce.Sifra<br />
+            Točka skladišča:@Model.Dostava.TockaSkladisca.Sifra<br />
+            Termin:@Model.Dostava.Termin<br />
+        </p>
+    </div>
+}

@@ -1,8 +1,51 @@
-﻿
+﻿@model krka_naloga2.Models.PorociloModel
 @{
     ViewData["Title"] = "Porocilo";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@section Scripts{ 
+    <script type="text/javascript">
+        function printDiv(divName) {
+            var printContents = document.getElementById(divName).innerHTML;
+            var originalContents = document.body.innerHTML;
+
+            document.body.innerHTML = printContents;
+
+            window.print();
+
+            document.body.innerHTML = originalContents;
+
+        }
+        function print(sifra) {
+            window.open('/Dostava/' + sifra + '/Tiskaj', '_blank', 'width=1090,height=595,scrollbars=no,menubar=no,toolbar=no,location=no,status=no,titlebar=no');
+        }
+    </script>
+}
 
 <h1>Porocilo</h1>
+
+@if (Model == null || Model.Dostava == null)
+{
+    <div>
+        <p>Dostava ne obstaja!</p>
+    </div>
+}
+else
+{
+    <div id="tiskaj">
+        <p>
+            Dostava: @Model.Dostava.Sifra
+            Uporabnik: @Model.UporabnikIme<br />
+            Podjetje: @Model.Dostava.Podjetje.Naziv<br />
+            Skladišče: @Model.Dostava.TockaSkladisca.Skladisce.Sifra<br />
+            Točka skladišča: @Model.Dostava.TockaSkladisca.Sifra<br />
+            Termin: @Model.Dostava.Termin<br />
+        </p>
+    </div>
+    <button onclick="print(@Model.Dostava.Sifra)">Natisni</button>
+    <a href = "@Html.Raw($"mailto:?subject=Dostava%20{Model.Dostava.Sifra}&body={Model.MailMessage}")">
+        Pošlji poročilo
+    </a>
+}
+
 
