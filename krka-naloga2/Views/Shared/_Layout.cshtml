@@ -22,9 +22,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="VnesiStDostave">Vnos dostave</a>
-                        </li>
+                        @if (User.HasClaim("Permission", "VnosDostave"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="VnesiStDostave">Vnos dostave</a>
+                            </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="SeznamDostav">SeznamDostav</a>
                         </li>
@@ -38,6 +41,21 @@
             @RenderBody()
         </main>
     </div>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div>
+            <table class="table table-sm">
+                @foreach (var claim in User.Claims)
+                {
+                <tr>
+                    <td>@claim.Type</td>
+                    <td>@claim.Value</td>
+                </tr>
+                }
+            </table>
+        </div>
+    }
+
 
     <footer class="border-top footer text-muted">
         <div class="container">
