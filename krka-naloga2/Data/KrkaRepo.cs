@@ -16,6 +16,7 @@ namespace krka_naloga2.Data
         void AddDostava(Dostava dostava);
         Dostava GetDostava(string sifraDostave);
         void DeleteDostava(int id);
+        void SetStatusDostave(string sifraDostave, StatusDostave status);
     }
 
     public class KrkaRepo : IKrkaRepo
@@ -84,6 +85,14 @@ namespace krka_naloga2.Data
             if (d == null) return;
 
             _context.Dostave.Remove(d);
+        }
+
+        public void SetStatusDostave(string sifraDostave, StatusDostave status)
+        {
+            var d = _context.Dostave.SingleOrDefault(t => t.Sifra == sifraDostave);
+            if (d == null) return;
+
+            d.Status = status;
         }
     }
 }

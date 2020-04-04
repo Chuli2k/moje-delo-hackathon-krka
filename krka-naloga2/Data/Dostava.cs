@@ -10,8 +10,15 @@ namespace krka_naloga2.Data
         public int TockaSkladiscaId { get; set; }
         public int PodjetjeId { get; set; }
         public string UporabnikId { get; set; }
+        public StatusDostave Status { get; set; } = StatusDostave.Planiran;
         public TockaSkladisca TockaSkladisca { get; set; }
         public Podjetje Podjetje { get; set; }
         public Uporabnik Uporabnik { get; set; }
+    }
+
+    public enum StatusDostave
+    {
+        Planiran,
+        Potrjen
     }
 }

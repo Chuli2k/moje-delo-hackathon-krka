@@ -207,12 +207,26 @@ namespace krka_naloga2.Controllers
             return RedirectToAction("SeznamDostav");
         }
 
-        [HttpGet("/Prevzem/{sifraDostave}")]
+        [HttpGet("/Dostava/{sifraDostave}/Prevzem")]
         public IActionResult Prevzem(string sifraDostave)
         {
             var d = _krkaRepo.GetDostava(sifraDostave);
 
             return View(d);
+        }
+
+        [HttpPost("/Dostava/{sifraDostave}/Prevzem")]
+        public IActionResult PrevzemPotrdi(string sifraDostave)
+        {
+            var dostavaDb = _krkaRepo.GetDostava(sifraDostave);
+
+            if (dostavaDb == null)
+                return RedirectToAction("Prevzem", new { sifraDostave });
+
+            _krkaRepo.SetStatusDostave(sifraDostave, StatusDostave.Potrjen);
+            _krkaRepo.SaveChanges();
+
+            return RedirectToAction("Prevzem", new { sifraDostave });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

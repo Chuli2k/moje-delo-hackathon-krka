@@ -7,8 +7,18 @@
 <h1>Prevzem</h1>
 @if (Model != null)
 {
+<form asp-action="Prevzem" asp-route-sifraDostave="@Model.Sifra" method="post">
     <partial name="PorociloPodatki" model="Model" />
-    <button>Potrdi</button>
+    @if (Model.Status != krka_naloga2.Data.StatusDostave.Potrjen)
+    {
+        <input type="submit" value="Potrdi" class="btn btn-primary" />
+    }
+    else
+    {
+        <h4>Dostava potrjena</h4>
+    }
+
+</form>
 } else
 {
     <p>Podana dostava ne obstaja.</p>

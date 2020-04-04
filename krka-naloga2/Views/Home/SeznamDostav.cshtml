@@ -28,6 +28,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Uporabnik)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -53,9 +56,13 @@
                 @Html.DisplayFor(modelItem => item.Uporabnik.UserName)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Porocilo" asp-route-sifraDostave="@item.Sifra">Poročilo</a> |
-                <a asp-action="DeleteDostava" asp-route-sifraDostave="@item.Sifra">Izbriši</a>
+                <a asp-action="DeleteDostava" asp-route-sifraDostave="@item.Sifra">Izbriši</a> |
+                <a asp-action="Prevzem" asp-route-sifraDostave="@item.Sifra">Prevzem</a>
             </td>
         </tr>
 }
