@@ -18,7 +18,7 @@
 }
 
 <h1>IzberiTermin</h1>
-<p>@Model.SifraDostave</p>
+<p>Izbrana dostava @Model.SifraDostave za skladišče @Model.SkladisceSifra</p>
 <form action="/Dostava/@Model.SifraDostave/IzbiraTermina" method="post">
     <input type="submit" value="Izberi" class="btn btn-primary" />
     @*<input type="hidden" id="izbranDatum" asp-for="IzbranTermin.IzbranDatum" />
@@ -52,13 +52,16 @@
                                         var boxColor = ura.JeProst ? "green" : "red";
                                         var radioValue = datum.Datum.ToShortDateString() + "-" + tocka.SifraTockeSkladisca + "-" + ura.Ura;
                                         <td style="background-color: @boxColor">
-                                            <input name="Izbira"
-                                                   id="Izbira-@radioValue"
-                                                   type="radio"
-                                                   value=""
-                                                   data-datum="@datum.Datum"
-                                                   data-ura="@ura.Ura"
-                                                   data-tocka="@tocka.SifraTockeSkladisca" />
+                                            @if (ura.JeProst)
+                                            {
+                                                <input name="Izbira"
+                                                        id="Izbira-@radioValue"
+                                                        type="radio"
+                                                        value=""
+                                                        data-datum="@datum.Datum"
+                                                        data-ura="@ura.Ura"
+                                                        data-tocka="@tocka.TockaSkladiscaId" />
+                                            }
                                         </td>
                                     }
                                 }

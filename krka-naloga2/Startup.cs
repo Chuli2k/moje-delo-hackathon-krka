@@ -28,6 +28,8 @@ namespace krka_naloga2
             services.AddDbContext<KrkaDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddTransient<IKrkaRepo, KrkaRepo>();
+
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<KrkaDbContext>();
 

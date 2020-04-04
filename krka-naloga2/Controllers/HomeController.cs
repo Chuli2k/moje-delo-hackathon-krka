@@ -15,10 +15,14 @@ namespace krka_naloga2.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IKrkaRepo _krkaRepo;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(
+            ILogger<HomeController> logger,
+            IKrkaRepo krkaRepo)
         {
             _logger = logger;
+            _krkaRepo = krkaRepo;
         }
 
         [AllowAnonymous]
@@ -32,29 +36,61 @@ namespace krka_naloga2.Controllers
             return View();
         }
 
-        [HttpPost]
+        [HttpPost("VnesiStDostave")]
         public IActionResult VnesiStDostavePost(StDostaveInputModel dostava)
         {
+            int stDostave;
+            var parsed = int.TryParse(dostava.Sifra, out stDostave);
+            if (!parsed)
+            {
+                ModelState.AddModelError("Sifra", "vnesite številko");
+                return View("VnesiStDostave");
+            }
+
+            var izbranoSkl = _krkaRepo.GetSkladisceByPrefix(dostava.Sifra[0].ToString());
+            if (izbranoSkl == null)
+            {
+                ModelState.AddModelError("Sifra", $"Skladišče {dostava.Sifra[0]} ne obstaja.");
+                return View("VnesiStDostave");
+            }
+
+            if(dostava.Sifra.Length != 4)
+            {
+                ModelState.AddModelError("Sifra", $"Šifra dostave mora biti štirimestna številka");
+                return View("VnesiStDostave");
+            }
+
             return RedirectToAction("IzberiTermin", new { sifraDostave = dostava.Sifra });
         }
 
         [HttpGet("/Dostava/{sifraDostave}/IzbiraTermina")]
         public IActionResult IzberiTermin(string sifraDostave)
         {
+            //TODO: validacija sifreDostave
+
+            var skl = _krkaRepo.GetSkladisceByPrefix(sifraDostave[0].ToString());
+
+            var zacetniDatum = DateTime.Now.Date;
+            var stDni = 7;
+
+            var tockeSkladisca = _krkaRepo.GetAllTockeSkladisca(skl.Id);
+            var dostave = _krkaRepo.GetAllDostave(zacetniDatum, zacetniDatum.AddDays(stDni), skl.Id);
+
             var seznam = new List<IzbiraTerminaModel>();
-            for (int dan = 0; dan < 7; dan++)
+            for (int dan = 0; dan < stDni; dan++)
             {
                 var danObj = new IzbiraTerminaModel()
                 {
-                    Datum = new DateTime(2020, 3, 30).AddDays(dan),
+                    Datum = zacetniDatum.AddDays(dan),
                     SeznamTockSkladisca = new List<TockaSkladiscaTerminaModel>()
                 };
 
-                for (int tocka = 1; tocka < 6; tocka++)
+                foreach (var tocka in tockeSkladisca.OrderBy(t => t.Sifra))
                 {
                     var tockaObj = new TockaSkladiscaTerminaModel()
                     {
-                        SifraTockeSkladisca = tocka.ToString(),
+                        SifraTockeSkladisca = tocka.Sifra,
+                        TockaSkladiscaId = tocka.Id,
                         SeznamUreTermina = new List<UraTerminaModel>()
                     };
 
@@ -64,7 +100,8 @@ namespace krka_naloga2.Controllers
                         var uraObj = new UraTerminaModel()
                         {
                             Ura = ura,
-                            JeProst = r%2 == 0,
+                            //JeProst = r%2 == 0,
+                            JeProst = !dostave.Any(t => t.Termin.Date == danObj.Datum && t.Termin.Hour == ura && t.TockaSkladiscaId == tocka.Id),
                             JeIzbran = false
                         };
 
@@ -80,14 +117,24 @@ namespace krka_naloga2.Controllers
             var model = new IzberiterminDostaveModel()
             {
                 SifraDostave = sifraDostave,
-                SeznamTerminov = seznam
+                SeznamTerminov = seznam,
+                SkladisceSifra = skl.Sifra
             };
             return View(model);
         }
 
         [HttpPost("/Dostava/{sifraDostave}/IzbiraTermina")]
-        public IActionResult IzberiTerminPost(string sifraDostave, DateTime? izbranDatum, int? izbranaUra, string izbranaTockaSifra) //TODO: Poglej kak uporabit posebaj class namesto seznama parametrov.
+        public IActionResult IzberiTerminPost(string sifraDostave, DateTime? izbranDatum, int? izbranaUra, int? izbranaTockaSifra) //TODO: Poglej kak uporabit posebaj class namesto seznama parametrov.
         {
+            var dostava = new Dostava()
+            {
+                PodjetjeId = 2,
+                Sifra = sifraDostave,
+                TockaSkladiscaId = izbranaTockaSifra.Value,
+                Termin = izbranDatum.Value.AddHours(izbranaUra.Value)
+            };
+            _krkaRepo.AddDostava(dostava);
+            _krkaRepo.SaveChanges();
             return RedirectToAction("Porocilo", new { sifraDostave });
         }
 

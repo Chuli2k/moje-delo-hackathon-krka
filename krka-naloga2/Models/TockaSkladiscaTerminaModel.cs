@@ -6,6 +6,7 @@ namespace krka_naloga2.Models
     {
         public IList<UraTerminaModel> SeznamUreTermina { get; set; }
         public string SifraTockeSkladisca { get; set; }
+        public int TockaSkladiscaId { get; set; }
 
     }
 

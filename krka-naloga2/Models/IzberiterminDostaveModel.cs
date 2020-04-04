@@ -11,7 +11,7 @@ namespace krka_naloga2.Models
         public DateTime? IzbranDatum { get; set; }
         public int? IzbranaUra { get; set; }
         public string IzbranaTockaSifra { get; set; }
-        //public TerminIzbira IzbranTermin { get; set; }
+        public string SkladisceSifra { get; set; }
         public IList<IzbiraTerminaModel> SeznamTerminov { get; set; }
     }
 
