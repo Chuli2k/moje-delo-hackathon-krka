@@ -37,6 +37,10 @@ namespace krka_naloga2.Data
                 .HasIndex(t => t.Sifra)
                 .IsUnique();
 
+            builder.Entity<Dostava>()
+                .HasIndex(t => t.Sifra)
+                .IsUnique();
+
             SeedData(builder);
         }
 
