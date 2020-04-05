@@ -58,6 +58,8 @@ namespace krka_naloga2.Shared
 
         public async Task<string> ValidateVnosTermina(IzberiterminDostaveModel podatki, Uporabnik uporabnikPrijave)
         {
+            if (!podatki.IzbranDatum.HasValue) return "Izberite termin.";
+
             var uporabnikIzbire = await _userManager.FindByIdAsync(podatki.IzbranUporabnikId);
             var roles = await _userManager.GetRolesAsync(uporabnikPrijave);
 

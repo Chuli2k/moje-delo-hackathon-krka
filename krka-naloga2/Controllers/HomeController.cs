@@ -172,7 +172,7 @@ namespace krka_naloga2.Controllers
             if (!string.IsNullOrEmpty(error))
             {
                 ModelState.AddModelError("SifraDostave", error);
-                return View(podatki);
+                return RedirectToAction("IzberiTermin", new { sifraDostave });
             }
 
             var dostavaDb = _dostavaDataManager.GetDostava(sifraDostave);
@@ -183,7 +183,7 @@ namespace krka_naloga2.Controllers
                 if (!string.IsNullOrEmpty(dostavaEditErrors))
                 {
                     ModelState.AddModelError("SifraDostave", dostavaEditErrors);
-                    return View(podatki);
+                    return RedirectToAction("IzberiTermin", new { sifraDostave });
                 }
 
                 await _dostavaDataManager.UrediDostavoAsync(podatki, uporabnikPrijave);
