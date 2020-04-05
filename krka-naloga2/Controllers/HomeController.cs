@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using krka_naloga2.Data;
 using Microsoft.AspNetCore.Identity;
 using krka_naloga2.Shared;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace krka_naloga2.Controllers
 {
@@ -82,7 +83,7 @@ namespace krka_naloga2.Controllers
 
         [HttpGet("/Dostava/{sifraDostave}/IzbiraTermina")]
         [Authorize(Roles = "Admin, Uporabnik")]
-        public IActionResult IzberiTermin(string sifraDostave)
+        public async Task<IActionResult> IzberiTermin(string sifraDostave)
         {
             //TODO: validacija sifreDostave
 
@@ -106,6 +107,7 @@ namespace krka_naloga2.Controllers
                 model.IzbranaUra = dostava.Termin.Hour;
                 model.IzbranaTockaId = dostava.TockaSkladiscaId;
                 model.IzbranaTockaSifra = dostava.TockaSkladisca.Sifra;
+                model.IzbranUporabnikId = dostava.UporabnikId;
             }
 
             //TODO: preveri, če uporabnik lahko ureja dostavo.
@@ -163,15 +165,29 @@ namespace krka_naloga2.Controllers
             }
 
             model.SeznamTerminov = seznam;
+            var podjetja = _krkaRepo.GetAllPodjetja();
+            var users = new List<Uporabnik>();
+            users.AddRange(await _userManager.GetUsersInRoleAsync("Uporabnik"));
+            users.AddRange(await _userManager.GetUsersInRoleAsync("Admin"));
+
+            model.Uporabniki = users.Select(t => new SelectListItem() { 
+                Value = t.Id.ToString(), 
+                Text = $"{t.UserName} ({podjetja.SingleOrDefault(p => p.Id == t.PodjetjeId)?.Naziv})"
+            });
             
             return View(model);
         }
 
         [HttpPost("/Dostava/{sifraDostave}/IzbiraTermina")]
         [Authorize(Roles = "Admin, Uporabnik")]
-        public async Task<IActionResult> IzberiTerminPost(string sifraDostave, DateTime? izbranDatum, int? izbranaUra, int? izbranaTockaId) //TODO: Poglej kak uporabit posebaj class namesto seznama parametrov.
+        public async Task<IActionResult> IzberiTerminPost(string sifraDostave, DateTime? izbranDatum, int? izbranaUra, int? izbranaTockaId, string izbranUporabnikId)
         {
-            var uporabnik = await _userManager.GetUserAsync(User);
+            var uporabnikPrijave = await _userManager.GetUserAsync(User);
+            var uporabnikIzbire = await _userManager.FindByIdAsync(izbranUporabnikId);
+
+            //Če si admin moraš izbrat uporabnika
+            if (User.IsInRole("Admin") && uporabnikIzbire == null)
+                return RedirectToAction("IzberiTermin", new { sifraDostave });
 
             var dostavaDb = _krkaRepo.GetDostava(sifraDostave);
             if(dostavaDb != null)
@@ -180,6 +196,13 @@ namespace krka_naloga2.Controllers
                 //TODO: preverjanje, da uporabnik lahko ureja dostavo
                 if (dostavaDb.Status == StatusDostave.Potrjen)
                     return RedirectToAction("IzberiTermin", new { sifraDostave });
+
+                if(User.IsInRole("Admin"))
+                {
+                    //Lahko ureja uporabnika
+                    dostavaDb.UporabnikId = uporabnikIzbire.Id;
+                    dostavaDb.PodjetjeId = uporabnikIzbire.PodjetjeId;
+                }
 
                 dostavaDb.TockaSkladiscaId = izbranaTockaId.Value;
                 dostavaDb.Termin = izbranDatum.Value.AddHours(izbranaUra.Value);
@@ -191,12 +214,20 @@ namespace krka_naloga2.Controllers
                 //Dodajanje dostave
                 var dostava = new Dostava()
                 {
-                    PodjetjeId = uporabnik.PodjetjeId,
-                    UporabnikId = uporabnik.Id,
+                    PodjetjeId = uporabnikPrijave.PodjetjeId,
+                    UporabnikId = uporabnikPrijave.Id,
                     Sifra = sifraDostave,
                     TockaSkladiscaId = izbranaTockaId.Value,
                     Termin = izbranDatum.Value.AddHours(izbranaUra.Value)
                 };
+
+                if (User.IsInRole("Admin"))
+                {
+                    //Admin lahko ureja uporabnika
+                    dostava.PodjetjeId = uporabnikIzbire.PodjetjeId;
+                    dostava.UporabnikId = uporabnikIzbire.Id;
+                }
+
                 _krkaRepo.AddDostava(dostava);
             }
             

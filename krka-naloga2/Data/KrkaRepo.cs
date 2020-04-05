@@ -20,6 +20,7 @@ namespace krka_naloga2.Data
         void DeleteDostava(int id);
         void SetStatusDostave(string sifraDostave, StatusDostave status);
         void UpdateDostava(Dostava dostava);
+        IEnumerable<Podjetje> GetAllPodjetja();
     }
 
     public class KrkaRepo : IKrkaRepo
@@ -120,6 +121,16 @@ namespace krka_naloga2.Data
             dostavaDb.Termin = dostava.Termin;
             dostavaDb.TockaSkladiscaId = dostava.TockaSkladiscaId;
             dostavaDb.UporabnikId = dostava.UporabnikId;
+        }
+
+        public IEnumerable<Podjetje> GetAllPodjetja()
+        {
+            return _context.Podjetja.AsNoTracking().ToList();
+        }
+
+        public Podjetje GetPodjetje(int id)
+        {
+            return _context.Podjetja.AsNoTracking().SingleOrDefault(t => t.Id == id);
         }
     }
 }

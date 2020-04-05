@@ -41,7 +41,7 @@ namespace krka_naloga2.Shared
             } 
             else if(roles.Contains("Uporabnik"))
             {
-                filter = d => d.UporabnikId == uporabnik.Id; //Vrni vse za uporabnika
+                filter = d => d.PodjetjeId == uporabnik.PodjetjeId; //Vrni vse za uporabnikovo podjetje
             } 
             else if (roles.Contains("Skladiscnik"))
             {
