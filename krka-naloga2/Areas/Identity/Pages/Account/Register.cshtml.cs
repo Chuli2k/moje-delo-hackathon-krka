@@ -87,6 +87,7 @@ namespace krka_naloga2.Areas.Identity.Pages.Account
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            Podjetja = _prijavaDataManager.GetAllPodjetja().Select(t => new SelectListItem() { Value = t.Id.ToString(), Text = t.Naziv });
             if (ModelState.IsValid)
             {
                 var user = new Uporabnik { UserName = Input.Email, Email = Input.Email, PodjetjeId = Input.PodjetjeId };
