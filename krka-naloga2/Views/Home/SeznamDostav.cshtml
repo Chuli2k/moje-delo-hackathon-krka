@@ -59,10 +59,19 @@
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Porocilo" asp-route-sifraDostave="@item.Sifra">Poročilo</a> |
-                <a asp-action="DeleteDostava" asp-route-sifraDostave="@item.Sifra">Izbriši</a> |
-                <a asp-action="Prevzem" asp-route-sifraDostave="@item.Sifra">Prevzem</a>
+                @if (User.IsInRole("Admin") || User.IsInRole("Uporabnik"))
+                {
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-sm active" role="button">Edit</a>
+                }
+                <a asp-action="Porocilo" asp-route-sifraDostave="@item.Sifra" class="btn btn-primary btn-sm active" role="button">Poročilo</a>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-action="DeleteDostava" asp-route-sifraDostave="@item.Sifra" class="btn btn-primary btn-sm active" role="button">Izbriši</a>
+                }
+                @if (User.IsInRole("Admin") || User.IsInRole("Skladiscnik"))
+                {
+                    <a asp-action="Prevzem" asp-route-sifraDostave="@item.Sifra" class="btn btn-primary btn-sm active" role="button">Prevzem</a>
+                }
             </td>
         </tr>
 }

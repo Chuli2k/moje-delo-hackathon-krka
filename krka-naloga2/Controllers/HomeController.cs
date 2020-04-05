@@ -35,12 +35,14 @@ namespace krka_naloga2.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin, Uporabnik")]
         public IActionResult VnesiStDostave()
         {
             return View();
         }
 
         [HttpPost("VnesiStDostave")]
+        [Authorize(Roles = "Admin, Uporabnik")]
         public IActionResult VnesiStDostavePost(StDostaveInputModel dostava)
         {
             int stDostave;
@@ -75,6 +77,7 @@ namespace krka_naloga2.Controllers
         }
 
         [HttpGet("/Dostava/{sifraDostave}/IzbiraTermina")]
+        [Authorize(Roles = "Admin, Uporabnik")]
         public IActionResult IzberiTermin(string sifraDostave)
         {
             //TODO: validacija sifreDostave
@@ -134,6 +137,7 @@ namespace krka_naloga2.Controllers
         }
 
         [HttpPost("/Dostava/{sifraDostave}/IzbiraTermina")]
+        [Authorize(Roles = "Admin, Uporabnik")]
         public async Task<IActionResult> IzberiTerminPost(string sifraDostave, DateTime? izbranDatum, int? izbranaUra, int? izbranaTockaSifra) //TODO: Poglej kak uporabit posebaj class namesto seznama parametrov.
         {
             var uporabnik = await _userManager.GetUserAsync(User);
@@ -198,6 +202,7 @@ namespace krka_naloga2.Controllers
         }
 
         [HttpGet("/Dostava/{sifraDostave}/Delete")]
+        [Authorize(Roles = "Admin, Uporabnik")]
         public IActionResult DeleteDostava(string sifraDostave)
         {
             var d = _krkaRepo.GetDostava(sifraDostave);
@@ -208,6 +213,7 @@ namespace krka_naloga2.Controllers
         }
 
         [HttpGet("/Dostava/{sifraDostave}/Prevzem")]
+        [Authorize(Roles = "Admin, Skladiscnik")]
         public IActionResult Prevzem(string sifraDostave)
         {
             var d = _krkaRepo.GetDostava(sifraDostave);
@@ -216,6 +222,7 @@ namespace krka_naloga2.Controllers
         }
 
         [HttpPost("/Dostava/{sifraDostave}/Prevzem")]
+        [Authorize(Roles = "Admin, Skladiscnik")]
         public IActionResult PrevzemPotrdi(string sifraDostave)
         {
             var dostavaDb = _krkaRepo.GetDostava(sifraDostave);
