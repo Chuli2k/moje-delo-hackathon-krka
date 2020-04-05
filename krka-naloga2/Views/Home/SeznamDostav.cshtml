@@ -61,7 +61,7 @@
             <td>
                 @if (User.IsInRole("Admin") || User.IsInRole("Uporabnik"))
                 {
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-sm active" role="button">Edit</a>
+                    <a asp-action="IzberiTermin" asp-route-sifraDostave="@item.Sifra" class="btn btn-primary btn-sm active" role="button">Uredi</a>
                 }
                 <a asp-action="Porocilo" asp-route-sifraDostave="@item.Sifra" class="btn btn-primary btn-sm active" role="button">Poročilo</a>
                 @if (User.IsInRole("Admin"))

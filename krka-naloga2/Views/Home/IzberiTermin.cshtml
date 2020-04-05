@@ -9,67 +9,104 @@
         $(document).ready(function () {
             $('input[name$="Izbira"]').on('change', function () {
                 console.log($(this).attr('data-tocka'));
-                $('#izbranDatum').attr('value', $(this).attr('data-datum'));
+
+                let datum = $(this).attr('data-datum');
+
+                $('#izbranDatum').attr('value', datum);
                 $('#izbranaUra').attr('value', $(this).attr('data-ura'));
-                $('#izbranaTockaSifra').attr('value', $(this).attr('data-tocka'));
+                $('#izbranaTockaId').attr('value', $(this).attr('data-tocka-id'));
+
+                let datumDate = datum.substring(0, datum.length - 8)
+
+                $('#datumDisplay').text(datumDate);
+                $('#uraDisplay').text($(this).attr('data-ura'));
+                $('#tockaDisplay').text($(this).attr('data-tocka-sifra'));
+
+                $('#terminDisplay').show();
             });
         });
     </script>
 }
 
+@{
+    var izbranDatumText = Model.IzbranDatum.HasValue ? Model.IzbranDatum.Value.ToShortDateString() : "";
+    var terminDisplayVal = Model.IzbranDatum.HasValue ? "inline" : "none";
+}
+
 <h1>IzberiTermin</h1>
 <p>Izbrana dostava @Model.SifraDostave za skladišče @Model.SkladisceSifra</p>
-<form action="/Dostava/@Model.SifraDostave/IzbiraTermina" method="post">
-    <input type="submit" value="Izberi" class="btn btn-primary" />
-    @*<input type="hidden" id="izbranDatum" asp-for="IzbranTermin.IzbranDatum" />
-        <input type="hidden" id="izbranaUra" asp-for="IzbranTermin.IzbranaUra" />
-        <input type="hidden" id="izbranaTockaSifra" asp-for="IzbranTermin.IzbranaTockaSifra" />*@
-    <input type="hidden" id="izbranDatum" asp-for="IzbranDatum" />
-    <input type="hidden" id="izbranaUra" asp-for="IzbranaUra" />
-    <input type="hidden" id="izbranaTockaSifra" asp-for="IzbranaTockaSifra" />
-    @{
-        foreach (var datum in Model.SeznamTerminov)
-        {
-            <div>
-                <h4>@datum.Datum.ToShortDateString()</h4>
-                <table class="table table-sm">
-                    @{
-                        <tr>
-                            @for (int i = -1; i < 24; i++)
-                            {
-                                var uraText = i < 0 ? "" : i.ToString();
-                                <td>@uraText</td>
-                            }
-                        </tr>
+<span asp-validation-for="SifraDostave" class="text-danger"></span>
+<p>
+    Izbran termin:
+    <span id="terminDisplay" style="display: @terminDisplayVal">
+        <span id="datumDisplay">@izbranDatumText</span> ob <span id="uraDisplay">@Model.IzbranaUra</span> uri za točko skladišča <span id="tockaDisplay">@Model.IzbranaTockaSifra</span>
+    </span>
+</p>
+@if (ViewData.ModelState.IsValid)
+{
+    <form asp-action="IzberiTerminPost" asp-route-sifraDostave="@Model.SifraDostave" method="post">
+        <input type="submit" value="Izberi" class="btn btn-primary" />
 
-                        foreach (var tocka in datum.SeznamTockSkladisca)
-                        {
+        <input type="hidden" id="izbranDatum" asp-for="IzbranDatum" />
+        <input type="hidden" id="izbranaUra" asp-for="IzbranaUra" />
+        <input type="hidden" id="izbranaTockaId" asp-for="IzbranaTockaId" />
+        @{
+            foreach (var datum in Model.SeznamTerminov)
+            {
+                <div>
+                    <h4>@datum.Datum.ToShortDateString()</h4>
+                    <table class="table table-sm">
+                        @{
                             <tr>
-                                <td>@tocka.SifraTockeSkladisca</td>
-                                @{
-                                    foreach (var ura in tocka.SeznamUreTermina)
-                                    {
-                                        var boxColor = ura.JeProst ? "green" : "red";
-                                        var radioValue = datum.Datum.ToShortDateString() + "-" + tocka.SifraTockeSkladisca + "-" + ura.Ura;
-                                        <td style="background-color: @boxColor">
-                                            @if (ura.JeProst)
-                                            {
-                                                <input name="Izbira"
-                                                        id="Izbira-@radioValue"
-                                                        type="radio"
-                                                        value=""
-                                                        data-datum="@datum.Datum"
-                                                        data-ura="@ura.Ura"
-                                                        data-tocka="@tocka.TockaSkladiscaId" />
-                                            }
-                                        </td>
-                                    }
+                                @for (int i = -1; i < 24; i++)
+                                {
+                                    var uraText = i < 0 ? "" : i.ToString();
+                                    <td>@uraText</td>
                                 }
                             </tr>
+
+                            foreach (var tocka in datum.SeznamTockSkladisca)
+                            {
+                                <tr>
+                                    <td>@tocka.SifraTockeSkladisca</td>
+                                    @{
+                                        foreach (var ura in tocka.SeznamUreTermina)
+                                        {
+                                            var checkedVal = "";
+                                            if (Model.IzbranDatum.HasValue)
+                                            {
+                                                if (Model.IzbranDatum.Value.Date == datum.Datum.Date &&
+                                                    Model.IzbranaUra == ura.Ura &&
+                                                    Model.IzbranaTockaId == tocka.TockaSkladiscaId)
+                                                {
+                                                    checkedVal = "checked";
+                                                }
+                                            }
+
+                                            var boxColor = ura.JeProst ? "green" : checkedVal == "" ? "red" : "orange";
+                                            var radioValue = datum.Datum.ToShortDateString() + "-" + tocka.SifraTockeSkladisca + "-" + ura.Ura;
+
+                                            <td style="background-color: @boxColor">
+                                                @if (ura.JeProst || checkedVal != "")
+                                                {
+                                                    <input name="Izbira"
+                                                           id="Izbira-@radioValue"
+                                                           type="radio"
+                                                           @checkedVal
+                                                           data-datum="@datum.Datum"
+                                                           data-ura="@ura.Ura"
+                                                           data-tocka-id="@tocka.TockaSkladiscaId"
+                                                           data-tocka-sifra="@tocka.SifraTockeSkladisca" />
+                                                }
+                                            </td>
+                                        }
+                                    }
+                                </tr>
+                            }
                         }
-                    }
-                </table>
-            </div>
+                    </table>
+                </div>
+            }
         }
-    }
-</form>
+    </form>
+}

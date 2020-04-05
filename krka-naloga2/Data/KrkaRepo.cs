@@ -17,6 +17,7 @@ namespace krka_naloga2.Data
         Dostava GetDostava(string sifraDostave);
         void DeleteDostava(int id);
         void SetStatusDostave(string sifraDostave, StatusDostave status);
+        void UpdateDostava(Dostava dostava);
     }
 
     public class KrkaRepo : IKrkaRepo
@@ -93,6 +94,21 @@ namespace krka_naloga2.Data
             if (d == null) return;
 
             d.Status = status;
+        }
+
+        public void UpdateDostava(Dostava dostava)
+        {
+            var dostavaDb = _context.Dostave.SingleOrDefault(t => t.Id == dostava.Id);
+            if (dostavaDb == null) return;
+
+            if (dostavaDb.Sifra != dostava.Sifra)
+                throw new Exception("Šifre dostave ni dovoljeno spreminjat.");
+
+            dostavaDb.PodjetjeId = dostava.PodjetjeId;
+            dostavaDb.Status = dostava.Status;
+            dostavaDb.Termin = dostava.Termin;
+            dostavaDb.TockaSkladiscaId = dostava.TockaSkladiscaId;
+            dostavaDb.UporabnikId = dostava.UporabnikId;
         }
     }
 }

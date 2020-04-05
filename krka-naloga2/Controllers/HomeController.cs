@@ -82,7 +82,38 @@ namespace krka_naloga2.Controllers
         {
             //TODO: validacija sifreDostave
 
+            var model = new IzberiterminDostaveModel()
+            {
+                SifraDostave = sifraDostave,
+                SeznamTerminov = new List<IzbiraTerminaModel>()
+            };
+
+            var dostava = _krkaRepo.GetDostava(sifraDostave);
+
+            if (dostava != null && dostava.Status == StatusDostave.Potrjen)
+            {
+                ModelState.AddModelError("SifraDostave", "Šifra dostave je že potrjena!");
+                return View(model);
+            }
+
+            if (dostava != null)
+            {
+                model.IzbranDatum = dostava.Termin.Date;
+                model.IzbranaUra = dostava.Termin.Hour;
+                model.IzbranaTockaId = dostava.TockaSkladiscaId;
+                model.IzbranaTockaSifra = dostava.TockaSkladisca.Sifra;
+            }
+
+            //TODO: preveri, če uporabnik lahko ureja dostavo.
+
             var skl = _krkaRepo.GetSkladisceByPrefix(sifraDostave[0].ToString());
+            if(skl == null)
+            {
+                ModelState.AddModelError("SifraDostave", "Skladišče ne obstaja");
+                return View(model);
+            }
+            
+            model.SkladisceSifra = skl.Sifra;
 
             var zacetniDatum = DateTime.Now.Date;
             var stDni = 7;
@@ -127,30 +158,45 @@ namespace krka_naloga2.Controllers
                 seznam.Add(danObj);
             }
 
-            var model = new IzberiterminDostaveModel()
-            {
-                SifraDostave = sifraDostave,
-                SeznamTerminov = seznam,
-                SkladisceSifra = skl.Sifra
-            };
+            model.SeznamTerminov = seznam;
+            
             return View(model);
         }
 
         [HttpPost("/Dostava/{sifraDostave}/IzbiraTermina")]
         [Authorize(Roles = "Admin, Uporabnik")]
-        public async Task<IActionResult> IzberiTerminPost(string sifraDostave, DateTime? izbranDatum, int? izbranaUra, int? izbranaTockaSifra) //TODO: Poglej kak uporabit posebaj class namesto seznama parametrov.
+        public async Task<IActionResult> IzberiTerminPost(string sifraDostave, DateTime? izbranDatum, int? izbranaUra, int? izbranaTockaId) //TODO: Poglej kak uporabit posebaj class namesto seznama parametrov.
         {
             var uporabnik = await _userManager.GetUserAsync(User);
 
-            var dostava = new Dostava()
+            var dostavaDb = _krkaRepo.GetDostava(sifraDostave);
+            if(dostavaDb != null)
             {
-                PodjetjeId = uporabnik.PodjetjeId,
-                UporabnikId = uporabnik.Id,
-                Sifra = sifraDostave,
-                TockaSkladiscaId = izbranaTockaSifra.Value,
-                Termin = izbranDatum.Value.AddHours(izbranaUra.Value)
-            };
-            _krkaRepo.AddDostava(dostava);
+                //Urejanje dostave
+                //TODO: preverjanje, da uporabnik lahko ureja dostavo
+                if (dostavaDb.Status == StatusDostave.Potrjen)
+                    return RedirectToAction("IzberiTermin", new { sifraDostave });
+
+                dostavaDb.UporabnikId = uporabnik.Id;
+                dostavaDb.TockaSkladiscaId = izbranaTockaId.Value;
+                dostavaDb.Termin = izbranDatum.Value.AddHours(izbranaUra.Value);
+
+                _krkaRepo.UpdateDostava(dostavaDb);
+            }
+            else
+            {
+                //Dodajanje dostave
+                var dostava = new Dostava()
+                {
+                    PodjetjeId = uporabnik.PodjetjeId,
+                    UporabnikId = uporabnik.Id,
+                    Sifra = sifraDostave,
+                    TockaSkladiscaId = izbranaTockaId.Value,
+                    Termin = izbranDatum.Value.AddHours(izbranaUra.Value)
+                };
+                _krkaRepo.AddDostava(dostava);
+            }
+            
             _krkaRepo.SaveChanges();
             return RedirectToAction("Porocilo", new { sifraDostave });
         }
