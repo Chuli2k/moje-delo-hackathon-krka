@@ -45,7 +45,8 @@ namespace krka_naloga2.Shared
             } 
             else if (roles.Contains("Skladiscnik"))
             {
-                filter = d => d.TockaSkladisca.SkladisceId == 1; //TODO: filter za skladiščnika
+                //Vse planirane dostave za skladišče
+                filter = d => d.TockaSkladisca.SkladisceId == uporabnik.SkladisceId && d.Status == StatusDostave.Planiran;
             }
 
             var dostave = _krkaRepo.GetAllDostave(from, to, filter);
