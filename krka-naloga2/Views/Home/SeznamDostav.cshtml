@@ -68,7 +68,7 @@
                 {
                     <a asp-action="DeleteDostava" asp-route-sifraDostave="@item.Sifra" class="btn btn-primary btn-sm active" role="button">Izbriši</a>
                 }
-                @if (User.IsInRole("Admin") || User.IsInRole("Skladiscnik"))
+                @if (User.IsInRole("Skladiscnik"))
                 {
                     <a asp-action="Prevzem" asp-route-sifraDostave="@item.Sifra" class="btn btn-primary btn-sm active" role="button">Prevzem</a>
                 }

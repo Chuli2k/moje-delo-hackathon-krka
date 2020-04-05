@@ -171,6 +171,7 @@ namespace krka_naloga2
                 user.Email = "sklad@krka.si";
                 user.PodjetjeId = 1;
                 user.EmailConfirmed = true;
+                user.SkladisceId = 1;
 
                 var result = userManager.CreateAsync(user, "Password123.").Result;
 
