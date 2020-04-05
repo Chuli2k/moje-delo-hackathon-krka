@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using krka_naloga2.Data;
+using krka_naloga2.Shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -28,11 +29,12 @@ namespace krka_naloga2
             services.AddDbContext<KrkaDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddTransient<IKrkaRepo, KrkaRepo>();
-
             services.AddDefaultIdentity<Uporabnik>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<KrkaDbContext>();
+
+            services.AddTransient<IKrkaRepo, KrkaRepo>();
+            services.AddTransient<IDostavaDataManager, DostavaDataManager>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();

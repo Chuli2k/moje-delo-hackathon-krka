@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace krka_naloga2.Data
@@ -13,6 +14,7 @@ namespace krka_naloga2.Data
         Skladisce GetSkladisceByPrefix(string prefix);
         IEnumerable<TockaSkladisca> GetAllTockeSkladisca(int skladisceId);
         IEnumerable<Dostava> GetAllDostave(DateTime start, DateTime end, int? skladisceId = null);
+        IEnumerable<Dostava> GetAllDostave(DateTime start, DateTime end, Expression<Func<Dostava, bool>> filter);
         void AddDostava(Dostava dostava);
         Dostava GetDostava(string sifraDostave);
         void DeleteDostava(int id);
@@ -64,6 +66,15 @@ namespace krka_naloga2.Data
             
             if (skladisceId.HasValue)
                 q = q.Where(t => t.TockaSkladisca.SkladisceId == skladisceId);
+
+            return q.Where(t => t.Termin >= start && t.Termin <= end).ToList();
+        }
+
+        public IEnumerable<Dostava> GetAllDostave(DateTime start, DateTime end, Expression<Func<Dostava, bool>> filter)
+        {
+            var q = GetDostaveAllIncluding().AsNoTracking();
+
+            if(filter != null) q = q.Where(filter);
 
             return q.Where(t => t.Termin >= start && t.Termin <= end).ToList();
         }

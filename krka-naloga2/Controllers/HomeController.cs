@@ -9,6 +9,7 @@ using krka_naloga2.Models;
 using Microsoft.AspNetCore.Authorization;
 using krka_naloga2.Data;
 using Microsoft.AspNetCore.Identity;
+using krka_naloga2.Shared;
 
 namespace krka_naloga2.Controllers
 {
@@ -18,15 +19,18 @@ namespace krka_naloga2.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IKrkaRepo _krkaRepo;
         private readonly UserManager<Uporabnik> _userManager;
+        private readonly IDostavaDataManager _dostavaDataManager;
 
         public HomeController(
             ILogger<HomeController> logger,
             IKrkaRepo krkaRepo,
-            UserManager<Uporabnik> userManager)
+            UserManager<Uporabnik> userManager,
+            IDostavaDataManager dostavaDataManager)
         {
             _logger = logger;
             _krkaRepo = krkaRepo;
             _userManager = userManager;
+            _dostavaDataManager = dostavaDataManager;
         }
 
         [AllowAnonymous]
@@ -177,7 +181,6 @@ namespace krka_naloga2.Controllers
                 if (dostavaDb.Status == StatusDostave.Potrjen)
                     return RedirectToAction("IzberiTermin", new { sifraDostave });
 
-                dostavaDb.UporabnikId = uporabnik.Id;
                 dostavaDb.TockaSkladiscaId = izbranaTockaId.Value;
                 dostavaDb.Termin = izbranDatum.Value.AddHours(izbranaUra.Value);
 
@@ -240,10 +243,11 @@ namespace krka_naloga2.Controllers
         }
 
         [HttpGet("/Dostava")]
-        public IActionResult SeznamDostav()
+        public async Task<IActionResult> SeznamDostav()
         {
-            var model = _krkaRepo.GetAllDostave(new DateTime(2020, 1, 1), new DateTime(2021, 1, 1));
-
+            //var model = _krkaRepo.GetAllDostave(new DateTime(2020, 1, 1), new DateTime(2021, 1, 1));
+            var uporabnik = await _userManager.GetUserAsync(User);
+            var model = await _dostavaDataManager.GetAllSeznamDostavAsync(new DateTime(2020, 1, 1), new DateTime(2021, 1, 1), uporabnik);
             return View(model);
         }
 
