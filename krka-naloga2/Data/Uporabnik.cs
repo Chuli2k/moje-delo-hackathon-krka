@@ -11,5 +11,6 @@ namespace krka_naloga2.Data
         public int? SkladisceId { get; set; }
         public HashSet<Dostava> Dostave { get; set; } = new HashSet<Dostava>();
         public Skladisce Skladisce { get; set; }
+        public Podjetje Podjetje { get; set; }
     }
 }

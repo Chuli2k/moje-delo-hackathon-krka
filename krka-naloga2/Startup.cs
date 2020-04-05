@@ -35,6 +35,7 @@ namespace krka_naloga2
 
             services.AddTransient<IKrkaRepo, KrkaRepo>();
             services.AddTransient<IDostavaDataManager, DostavaDataManager>();
+            services.AddTransient<IModelValidator, ModelValidator>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();

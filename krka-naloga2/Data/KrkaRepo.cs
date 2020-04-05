@@ -53,7 +53,10 @@ namespace krka_naloga2.Data
 
         public Skladisce GetSkladisceByPrefix(string prefix)
         {
-            return _context.Skladisca.AsNoTracking().SingleOrDefault(t => t.Sifra.StartsWith(prefix));
+            return _context.Skladisca
+                .Include(t => t.TockeSkladisca)
+                .AsNoTracking()
+                .SingleOrDefault(t => t.Sifra.StartsWith(prefix));
         }
 
         public IEnumerable<TockaSkladisca> GetAllTockeSkladisca(int skladisceId)

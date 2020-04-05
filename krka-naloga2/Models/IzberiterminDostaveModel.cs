@@ -12,7 +12,7 @@ namespace krka_naloga2.Models
         public DateTime? IzbranDatum { get; set; }
         public int? IzbranaUra { get; set; }
         public string IzbranaTockaSifra { get; set; }
-        public int IzbranaTockaId { get; set; }
+        public int? IzbranaTockaId { get; set; }
         public string IzbranUporabnikId { get; set; }
         public string SkladisceSifra { get; set; }
         public IEnumerable<IzbiraTerminaModel> SeznamTerminov { get; set; }
