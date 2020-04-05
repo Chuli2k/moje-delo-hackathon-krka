@@ -42,7 +42,9 @@ namespace krka_naloga2
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
+            UserManager<Uporabnik> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             if (env.IsDevelopment())
             {
@@ -68,6 +70,114 @@ namespace krka_naloga2
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+
+            SeedIdentity(userManager, roleManager);
+        }
+
+        private void SeedIdentity(UserManager<Uporabnik> userManager, RoleManager<IdentityRole> roleManager)
+        {
+            //Roles
+            if (!roleManager.RoleExistsAsync("Admin").Result)
+            {
+                var role = new IdentityRole
+                {
+                    Name = "Admin",
+                    NormalizedName = "ADMIN"
+                };
+                var roleResult = roleManager.CreateAsync(role).Result;
+            }
+            if (!roleManager.RoleExistsAsync("Uporabnik").Result)
+            {
+                var role = new IdentityRole
+                {
+                    Name = "Uporabnik",
+                    NormalizedName = "UPORABNIK"
+                };
+                var roleResult = roleManager.CreateAsync(role).Result;
+            }
+            if (!roleManager.RoleExistsAsync("Skladiscnik").Result)
+            {
+                var role = new IdentityRole
+                {
+                    Name = "Skladiscnik",
+                    NormalizedName = "SKLADISCNIK"
+                };
+                var roleResult = roleManager.CreateAsync(role).Result;
+            }
+            if (!roleManager.RoleExistsAsync("Test").Result)
+            {
+                var role = new IdentityRole
+                {
+                    Name = "Test",
+                    NormalizedName = "TEST"
+                };
+                var roleResult = roleManager.CreateAsync(role).Result;
+            }
+
+            //Test Users
+            //ADMIN
+            if (userManager.FindByNameAsync("admin@krka.si").Result == null)
+            {
+                var user = new Uporabnik();
+                user.UserName = "admin@krka.si";
+                user.Email = "admin@krka.si";
+                user.PodjetjeId = 1;
+                user.EmailConfirmed = true;
+
+                var result = userManager.CreateAsync(user, "Password123.").Result;
+
+                if (result.Succeeded)
+                {
+                    userManager.AddToRoleAsync(user, "Admin").Wait();
+                }
+            }
+            //UPORABNIKI
+            if (userManager.FindByNameAsync("user@bayer.com").Result == null)
+            {
+                var user = new Uporabnik();
+                user.UserName = "user@bayer.com";
+                user.Email = "user@bayer.com";
+                user.PodjetjeId = 2;
+                user.EmailConfirmed = true;
+
+                var result = userManager.CreateAsync(user, "Password123.").Result;
+
+                if (result.Succeeded)
+                {
+                    userManager.AddToRoleAsync(user, "Uporabnik").Wait();
+                }
+            }
+            if (userManager.FindByNameAsync("user@lek.si").Result == null)
+            {
+                var user = new Uporabnik();
+                user.UserName = "user@lek.si";
+                user.Email = "user@lek.si";
+                user.PodjetjeId = 3;
+                user.EmailConfirmed = true;
+
+                var result = userManager.CreateAsync(user, "Password123.").Result;
+
+                if (result.Succeeded)
+                {
+                    userManager.AddToRoleAsync(user, "Uporabnik").Wait();
+                }
+            }
+            //SKLADIŠÈNIK
+            if (userManager.FindByNameAsync("sklad@krka.si").Result == null)
+            {
+                var user = new Uporabnik();
+                user.UserName = "sklad@krka.si";
+                user.Email = "sklad@krka.si";
+                user.PodjetjeId = 1;
+                user.EmailConfirmed = true;
+
+                var result = userManager.CreateAsync(user, "Password123.").Result;
+
+                if (result.Succeeded)
+                {
+                    userManager.AddToRoleAsync(user, "Skladiscnik").Wait();
+                }
+            }
         }
     }
 }

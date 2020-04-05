@@ -49,7 +49,8 @@ namespace krka_naloga2.Data
             builder.Entity<Podjetje>()
                 .HasData(
                     new Podjetje() { Id = 1, Naziv = "Krka", Sifra = "10001" },
-                    new Podjetje() { Id = 2, Naziv = "Bayer", Sifra = "10002" }
+                    new Podjetje() { Id = 2, Naziv = "Bayer", Sifra = "10002" },
+                    new Podjetje() { Id = 3, Naziv = "LEK", Sifra = "10010" }
                 );
 
             var skl = new[]
