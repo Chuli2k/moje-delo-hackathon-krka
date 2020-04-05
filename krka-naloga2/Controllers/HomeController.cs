@@ -199,8 +199,6 @@ namespace krka_naloga2.Controllers
         [HttpGet("/Dostava/{sifraDostave}/Porocilo")]
         public async Task<IActionResult> PorociloAsync(string sifraDostave)
         {
-            //TODO: preveri, da šifra dostave obstaja
-
             var dostavaDb = _dostavaDataManager.GetDostava(sifraDostave);
             var uporabnik = await _userManager.GetUserAsync(User);
             var mailMsg = $"Uporabnik: {uporabnik.UserName}" + Environment.NewLine +
@@ -224,7 +222,6 @@ namespace krka_naloga2.Controllers
         [HttpGet("/Dostava/{sifraDostave}/Tiskaj")]
         public async Task<IActionResult> TiskajAsync(string sifraDostave)
         {
-            //TODO: preveri, da šifra dostave obstaja
             var uporabnik = await _userManager.GetUserAsync(User);
             var model = new PorociloModel()
             {
