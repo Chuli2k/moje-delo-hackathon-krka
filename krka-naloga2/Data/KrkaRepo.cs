@@ -81,7 +81,7 @@ namespace krka_naloga2.Data
 
             if(filter != null) q = q.Where(filter);
 
-            return q.Where(t => t.Termin >= start && t.Termin <= end).ToList();
+            return q.OrderBy(t => t.Termin).Where(t => t.Termin >= start && t.Termin <= end).ToList();
         }
 
         public IEnumerable<Dostava> GetAllDostavePaged(DateTime start, DateTime end, Expression<Func<Dostava, bool>> filter, int pageSize, int pageNum)
@@ -91,7 +91,7 @@ namespace krka_naloga2.Data
             if (filter != null) q = q.Where(filter);
             q = q.Where(t => t.Termin >= start && t.Termin <= end);
 
-            return q.Skip(pageSize * pageNum).Take(pageSize).ToList();
+            return q.OrderBy(t => t.Termin).Skip(pageSize * pageNum).Take(pageSize).ToList();
         }
 
         public void AddDostava(Dostava dostava)
