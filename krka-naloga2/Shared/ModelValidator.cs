@@ -8,12 +8,6 @@ using System.Threading.Tasks;
 
 namespace krka_naloga2.Shared
 {
-    public interface IModelValidator
-    {
-        string ValidateVnosSifraDostave(string sifraDostave);
-        string ValidateSifraDostave(string sifraDostave);
-        Task<string> ValidateVnosTermina(IzberiterminDostaveModel podatki, Uporabnik uporabnikPrijave);
-    }
     public class ModelValidator : IModelValidator
     {
         private readonly IKrkaRepo _krkaRepo;

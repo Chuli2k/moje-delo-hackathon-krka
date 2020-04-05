@@ -6,10 +6,6 @@ using System.Threading.Tasks;
 
 namespace krka_naloga2.Shared
 {
-    public interface IPrijavaDataManager
-    {
-        IEnumerable<Podjetje> GetAllPodjetja();
-    }
 
     public class PrijavaDataManager : IPrijavaDataManager
     {
