@@ -17,4 +17,3 @@ Vsi generirani uporabniki imajo geslo "Password123.".
 Registrirajo se lahko novi uporabniki, katerim se avtomatsko doloèi vloga "Uporabnik". Èe želimo kateremu spremenit vlogo, je potrebno v bazi popravit.
 Po registraciji se pojavi stran za potrditev email-a. Tam je potrebno kliknit na link "Click here to confirm your account".
 Dejansko pošiljanje potrditvenih mailov nisem vklopil, zaradi lažjega testiranja (sicer je že vkljuèeno v asp.core Identity).
-
