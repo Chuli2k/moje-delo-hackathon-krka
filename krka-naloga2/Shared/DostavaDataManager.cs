@@ -23,7 +23,7 @@ namespace krka_naloga2.Shared
             _userManager = userManager;
         }
 
-        public async Task<IEnumerable<Dostava>> GetAllSeznamDostavAsync(DateTime from, DateTime to, Uporabnik uporabnik)
+        public async Task<IEnumerable<Dostava>> GetAllSeznamDostavAsync(DateTime from, DateTime to, Uporabnik uporabnik, int pageSize, int pageStart)
         {
             if (uporabnik == null)
                 throw new ArgumentNullException(nameof(uporabnik));
@@ -50,7 +50,8 @@ namespace krka_naloga2.Shared
                 filter = d => d.TockaSkladisca.SkladisceId == uporabnik.SkladisceId && d.Status == StatusDostave.Planiran;
             }
 
-            var dostave = _krkaRepo.GetAllDostave(from, to, filter);
+            //var dostave = _krkaRepo.GetAllDostave(from, to, filter);
+            var dostave = _krkaRepo.GetAllDostavePaged(from, to, filter, pageSize, pageStart);
 
             return dostave;
         }
@@ -173,19 +174,5 @@ namespace krka_naloga2.Shared
             _krkaRepo.SetStatusDostave(sifraDostave, status);
             _krkaRepo.SaveChanges();
         }
-    }
-
-    public interface IDostavaDataManager
-    {
-        Task<IEnumerable<Dostava>> GetAllSeznamDostavAsync(DateTime from, DateTime to, Uporabnik uporabnik);
-        Skladisce GetSkladisceFromSifraDostave(string sifraDostave);
-        Dostava GetDostava(string sifraDostave);
-        Task<string> CheckEditDostavaAsync(Dostava dostava, Uporabnik uporabnik);
-        IEnumerable<TerminTockeSkladisca> GetAllZasedeniTermini(DateTime start, DateTime end, int skladisceId);
-        Task<IEnumerable<Uporabnik>> GetAllUporabnikiForVnosDostaveAsync();
-        Task UrediDostavoAsync(IzberiterminDostaveModel podatki, Uporabnik uporabnikPrijave);
-        Task DodajDostavoAsync(IzberiterminDostaveModel podatki, Uporabnik uporabnikPrijave);
-        void DeleteDostava(string sifraDostave);
-        void SetStatusDostave(string sifraDostave, StatusDostave status);
     }
 }

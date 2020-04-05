@@ -15,6 +15,7 @@ namespace krka_naloga2.Data
         IEnumerable<TockaSkladisca> GetAllTockeSkladisca(int skladisceId);
         IEnumerable<Dostava> GetAllDostave(DateTime start, DateTime end, int? skladisceId = null);
         IEnumerable<Dostava> GetAllDostave(DateTime start, DateTime end, Expression<Func<Dostava, bool>> filter);
+        IEnumerable<Dostava> GetAllDostavePaged(DateTime start, DateTime end, Expression<Func<Dostava, bool>> filter, int pageSize, int pageNum);
         void AddDostava(Dostava dostava);
         Dostava GetDostava(string sifraDostave);
         void DeleteDostava(int id);
@@ -81,6 +82,16 @@ namespace krka_naloga2.Data
             if(filter != null) q = q.Where(filter);
 
             return q.Where(t => t.Termin >= start && t.Termin <= end).ToList();
+        }
+
+        public IEnumerable<Dostava> GetAllDostavePaged(DateTime start, DateTime end, Expression<Func<Dostava, bool>> filter, int pageSize, int pageNum)
+        {
+            var q = GetDostaveAllIncluding().AsNoTracking();
+
+            if (filter != null) q = q.Where(filter);
+            q = q.Where(t => t.Termin >= start && t.Termin <= end);
+
+            return q.Skip(pageSize * pageNum).Take(pageSize).ToList();
         }
 
         public void AddDostava(Dostava dostava)

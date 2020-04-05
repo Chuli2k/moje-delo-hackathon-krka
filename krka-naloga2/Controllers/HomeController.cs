@@ -232,10 +232,13 @@ namespace krka_naloga2.Controllers
         }
 
         [HttpGet("/Dostava")]
-        public async Task<IActionResult> SeznamDostav()
+        public async Task<IActionResult> SeznamDostav([FromQuery]int pageStart = 0, [FromQuery]int pageSize = 5)
         {
             var uporabnik = await _userManager.GetUserAsync(User);
-            var model = await _dostavaDataManager.GetAllSeznamDostavAsync(new DateTime(2020, 1, 1), new DateTime(2021, 1, 1), uporabnik);
+            var model = await _dostavaDataManager.GetAllSeznamDostavAsync(new DateTime(2020, 1, 1), new DateTime(2021, 1, 1), uporabnik, pageSize, pageStart);
+            TempData.Clear();
+            TempData.Add("pageStart", pageStart);
+            TempData.Add("pageSize", pageSize);
             return View(model);
         }
 

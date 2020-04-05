@@ -3,10 +3,17 @@
 @{
     ViewData["Title"] = "SeznamDostav";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var startPage = TempData["pageStart"] as int?;
+    var prevPage = startPage != 0 ? startPage - 1 : 0;
+    var nextPage = startPage + 1;
 }
 
 <h1>SeznamDostav</h1>
-
+@*<a class="btn btn-sm" asp-area="" asp-controller="Home" asp-action="SeznamDostav" asp-route-pageStart="@prevPage" asp-route-pageSize="@TempData["pageSize"]"><</a>
+    <a class="btn btn-sm" asp-area="" asp-controller="Home" asp-action="SeznamDostav" asp-route-pageStart="@nextPage" asp-route-pageSize="@TempData["pageSize"]">></a>*@
+<a class="btn btn-sm" asp-area="" asp-controller="Home" asp-action="SeznamDostav" asp-route-pageStart="@prevPage"><</a>
+<a class="btn btn-sm" asp-area="" asp-controller="Home" asp-action="SeznamDostav" asp-route-pageStart="@nextPage">></a>
 <table class="table">
     <thead>
         <tr>
@@ -35,45 +42,46 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sifra)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Termin)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TockaSkladisca.Skladisce.Sifra)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TockaSkladisca.Sifra)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Podjetje.Naziv)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Uporabnik.UserName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @if (User.IsInRole("Admin") || User.IsInRole("Uporabnik"))
-                {
-                    <a asp-action="IzberiTermin" asp-route-sifraDostave="@item.Sifra" class="btn btn-primary btn-sm active" role="button">Uredi</a>
-                }
-                <a asp-action="Porocilo" asp-route-sifraDostave="@item.Sifra" class="btn btn-primary btn-sm active" role="button">Poročilo</a>
-                @if (User.IsInRole("Admin"))
-                {
-                    <a asp-action="DeleteDostava" asp-route-sifraDostave="@item.Sifra" class="btn btn-primary btn-sm active" role="button">Izbriši</a>
-                }
-                @if (User.IsInRole("Skladiscnik"))
-                {
-                    <a asp-action="Prevzem" asp-route-sifraDostave="@item.Sifra" class="btn btn-primary btn-sm active" role="button">Prevzem</a>
-                }
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Sifra)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Termin)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TockaSkladisca.Skladisce.Sifra)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TockaSkladisca.Sifra)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Podjetje.Naziv)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Uporabnik.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Uporabnik"))
+                    {
+                        <a asp-action="IzberiTermin" asp-route-sifraDostave="@item.Sifra" class="btn btn-primary btn-sm active" role="button">Uredi</a>
+                    }
+                    <a asp-action="Porocilo" asp-route-sifraDostave="@item.Sifra" class="btn btn-primary btn-sm active" role="button">Poročilo</a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="DeleteDostava" asp-route-sifraDostave="@item.Sifra" class="btn btn-primary btn-sm active" role="button">Izbriši</a>
+                    }
+                    @if (User.IsInRole("Skladiscnik"))
+                    {
+                        <a asp-action="Prevzem" asp-route-sifraDostave="@item.Sifra" class="btn btn-primary btn-sm active" role="button">Prevzem</a>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
